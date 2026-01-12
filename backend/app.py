@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 import cachetools
 from typing import List, Optional
 
-from database import get_db, Company, StockData
-from data_collector import fetch_stock_data, calculate_metrics
+from backend.database import get_db, Company, StockData
+from backend.data_collector import fetch_stock_data, calculate_metrics
 
 app = FastAPI(
     title="Stock Data Intelligence Dashboard API",
