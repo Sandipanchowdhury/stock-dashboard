@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Intelligence Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>Stock Intelligence Dashboard</h1>
+            </div>
+            <div class="header-info">
+                <div class="market-status">
+                    <span class="status-indicator active"></span>
+                    <span>Live Market</span>
+                </div>
+                <div class="last-updated" id="lastUpdated">
+                    Updated: Just now
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-building"></i> Companies</h3>
+                    <div class="search-box">
+                        <input type="text" id="searchCompany" placeholder="Search companies...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="companies-list" id="companiesList">
+                        <!-- Companies will be loaded here -->
+                        <div class="loading">Loading companies...</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-filter"></i> Filters</h3>
+                    <div class="filter-options">
+                        <label>Time Period:</label>
+                        <select id="timePeriod">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                            <option value="180">Last 6 months</option>
+                        </select>
+
+                        <label>Compare With:</label>
+                        <select id="compareStock">
+                            <option value="">None</option>
+                            <!-- Options will be populated dynamically -->
+                        </select>
+
+                        <button class="btn-compare" id="compareBtn">
+                            <i class="fas fa-balance-scale"></i> Compare Stocks
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-info-circle"></i> Quick Stats</h3>
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Companies</span>
+                            <span class="stat-value" id="totalCompanies">10</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Sectors</span>
+                            <span class="stat-value" id="totalSectors">5</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Avg Volatility</span>
+                            <span class="stat-value" id="avgVolatility">2.5%</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Stock Summary -->
+                <div class="stock-summary" id="stockSummary">
+                    <div class="summary-header">
+                        <h2><i class="fas fa-chart-bar"></i> Stock Analysis</h2>
+                        <div class="summary-actions">
+                            <button class="btn-refresh" id="refreshData">
+                                <i class="fas fa-sync-alt"></i> Refresh Data
+                            </button>
+                        </div>
+                    </div>
+                    <div class="summary-content">
+                        <div class="selected-stock" id="selectedStockInfo">
+                            <p>Select a company from the sidebar to view detailed analysis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> Price Trend</h3>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-color price"></span> Price</span>
+                                <span class="legend-item"><span class="legend-color moving-avg"></span> 7-Day MA</span>
+                            </div>
+                        </div>
+                        <canvas id="priceChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-area"></i> Daily Returns</h3>
+                        </div>
+                        <canvas id="returnsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="metrics-section">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background-color: #e3f2fd;">
+                                <i class="fas fa-arrow-up" style="color: #2196f3;"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h4>52-Week High</h4>
+                                <p class="metric-value" id="weekHigh">-</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background-color: #fce4ec;">
+                                <i class="fas fa-arrow-down" style="color: #e91e63;"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h4>52-Week Low</h4>
+                                <p class="metric-value" id="weekLow">-</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background-color: #e8f5e9;">
+                                <i class="fas fa-chart-pie" style="color: #4caf50;"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h4>Avg Close</h4>
+                                <p class="metric-value" id="avgClose">-</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background-color: #fff3e0;">
+                                <i class="fas fa-bolt" style="color: #ff9800;"></i>
+                            </div>
+                            <div class="metric-info">
+                                <h4>Volatility Score</h4>
+                                <p class="metric-value" id="volatilityScore">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gainers & Losers -->
+                <div class="performance-section">
+                    <div class="performance-card gainers">
+                        <div class="performance-header">
+                            <h3><i class="fas fa-trophy"></i> Top Gainers</h3>
+                            <span class="performance-badge positive">+</span>
+                        </div>
+                        <div class="performance-list" id="topGainers">
+                            <div class="loading">Loading gainers...</div>
+                        </div>
+                    </div>
+
+                    <div class="performance-card losers">
+                        <div class="performance-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Top Losers</h3>
+                            <span class="performance-badge negative">-</span>
+                        </div>
+                        <div class="performance-list" id="topLosers">
+                            <div class="loading">Loading losers...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Section -->
+                <div class="comparison-section" id="comparisonSection" style="display: none;">
+                    <div class="comparison-header">
+                        <h3><i class="fas fa-balance-scale"></i> Stock Comparison</h3>
+                        <button class="btn-close" id="closeComparison">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="comparison-content">
+                        <div class="comparison-stats">
+                            <div class="comparison-stat">
+                                <span class="stat-label">Correlation</span>
+                                <span class="stat-value" id="correlationValue">-</span>
+                            </div>
+                            <div class="comparison-stat">
+                                <span class="stat-label">Performance Difference</span>
+                                <span class="stat-value" id="perfDifference">-</span>
+                            </div>
+                        </div>
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Stock Intelligence Dashboard • Built with FastAPI & Chart.js • Data from Yahoo Finance</p>
+            <p class="api-info">API Status: <span class="api-status" id="apiStatus">Checking...</span></p>
+        </footer>
+    </div>
+
+    <!-- Load JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
