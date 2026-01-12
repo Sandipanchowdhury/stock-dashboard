@@ -42,16 +42,4 @@ A mini financial data platform built for the Jarnox Internship Assignment. This 
 - **Render** for backend hosting
 - **GitHub Pages** for frontend hosting
 
-## 📁 Project Structure
-stock-dashboard/
-├── backend/
-│ ├── app.py # FastAPI application
-│ ├── database.py # Database models and setup
-│ ├── data_collector.py # Stock data collection
-│ ├── requirements.txt # Python dependencies
-│ └── Procfile # Render deployment config
-├── frontend/
-│ ├── index.html # Main dashboard page
-│ ├── style.css # Styling
-│ └── script.js # Frontend logic
-└── README.md # This file
+
